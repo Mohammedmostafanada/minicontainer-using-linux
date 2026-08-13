@@ -57,6 +57,30 @@ By completing this lab, you will understand and practice:
 - Why real container runtimes need additional security and lifecycle mechanisms
 
 ---
+Guide
+
+The full hands-on walkthrough is available in [`GUIDE.md`](GUIDE.md). It is intentionally ordered from individual Linux primitives to the final integrated mini-container.
+
+### Jump to a Topic
+
+- [Introduction](GUIDE.md#1-introduction-a-container-is-not-a-vm)
+- [PID Namespace](GUIDE.md#2-pid-namespace--process-isolation)
+- [UTS Namespace](GUIDE.md#3-uts-namespace--hostname-isolation)
+- [Mount Namespace](GUIDE.md#4-mount-namespace--isolating-the-mount-view)
+- [`chroot`](GUIDE.md#5-chroot--the-first-attempt-at-changing-)
+- [BusyBox & Rootfs](GUIDE.md#6-busybox--building-a-small-root-filesystem)
+- [`pivot_root`](GUIDE.md#7-pivot_root--changing-the-root-mount)
+- [Network Namespace](GUIDE.md#8-network-namespace--network-isolation)
+- [`veth` Pair](GUIDE.md#9-veth-pair--connecting-the-network-namespace)
+- [cgroups v2](GUIDE.md#10-cgroups-v2--resource-control)
+- [Final Mini-Container](GUIDE.md#11-final-mini-container--putting-everything-together)
+- [Final Verification](GUIDE.md#12-final-verification)
+- [Mental Model](GUIDE.md#13-the-mental-model)
+- [What We Did Not Cover](GUIDE.md#14-what-we-did-not-cover)
+- [End-to-End Flow](GUIDE.md#15-end-to-end-lab-flow)
+- [Quick Glossary](GUIDE.md#16-quick-glossary)
+- [Final Takeaway](GUIDE.md#17-final-takeaway)
+---
 
 ## Architecture
 
