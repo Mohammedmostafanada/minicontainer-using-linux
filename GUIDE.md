@@ -52,6 +52,28 @@ The repository separates the project overview from the detailed walkthrough:
 - `GUIDE.md` — the full hands-on walkthrough and the reasoning behind each step.
 
 ---
+Table of Contents
+
+- [1. Introduction: A Container Is Not a VM](#1-introduction-a-container-is-not-a-vm)
+- [2. PID Namespace — Process Isolation](#2-pid-namespace--process-isolation)
+- [3. UTS Namespace — Hostname Isolation](#3-uts-namespace--hostname-isolation)
+- [4. Mount Namespace — Isolating the Mount View](#4-mount-namespace--isolating-the-mount-view)
+- [5. chroot — The First Attempt at Changing `/`](#5-chroot--the-first-attempt-at-changing-)
+- [6. BusyBox — Building a Small Root Filesystem](#6-busybox--building-a-small-root-filesystem)
+- [7. pivot_root — Changing the Root Mount](#7-pivot_root--changing-the-root-mount)
+- [8. Network Namespace — Network Isolation](#8-network-namespace--network-isolation)
+- [9. veth Pair — Connecting the Network Namespace](#9-veth-pair--connecting-the-network-namespace)
+- [10. cgroups v2 — Resource Control](#10-cgroups-v2--resource-control)
+- [11. Final Mini-Container — Putting Everything Together](#11-final-mini-container--putting-everything-together)
+- [12. Final Verification](#12-final-verification)
+- [13. The Mental Model](#13-the-mental-model)
+- [14. What We Did Not Cover](#14-what-we-did-not-cover)
+- [15. End-to-End Lab Flow](#15-end-to-end-lab-flow)
+- [16. Quick Glossary](#16-quick-glossary)
+- [17. Final Takeaway](#17-final-takeaway)
+- [18. Workflow Summary (Quick Reference)](#18-workflow-summary-quick-reference)
+
+---
 
 ## 1. Introduction: A Container Is Not a VM
 
@@ -88,7 +110,7 @@ What network environment can the process access?
 ```
 
 Container runtimes such as Docker, Podman, containerd, and OCI runtimes such as runc automate and coordinate mechanisms like these instead of requiring the user to assemble them manually.
-
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 2. PID Namespace — Process Isolation
@@ -170,6 +192,7 @@ From the host, the process appears as `75390`. From inside the PID namespace, th
 
 The kernel exposes this mapping through the `NSpid` field in `/proc/<pid>/status`. To read it, you need to look up that file **from a namespace that can see the target PID** — typically from the host, using the process's host-visible PID. A process running fully inside an isolated namespace generally cannot inspect PIDs outside its own namespace.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 3. UTS Namespace — Hostname Isolation
@@ -225,6 +248,7 @@ hostnamectl hostname container
 
 The reason is that we are studying the runtime hostname associated with the UTS namespace. `hostnamectl` is a systemd-oriented tool that also manages the system's persistent hostname configuration. Using it in a namespace lab can introduce system-wide configuration changes that are unrelated to the concept we are studying.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 4. Mount Namespace — Isolating the Mount View
@@ -305,6 +329,7 @@ mount --make-rprivate /
 
 This makes the mounts recursively private and prevents mount events from propagating between the container's mount tree and the host's mount tree.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 5. chroot — The First Attempt at Changing `/`
@@ -375,6 +400,7 @@ Those dependencies must exist inside the rootfs.
 
 A statically linked binary contains the code it needs for execution and therefore does not require external shared libraries in the rootfs. This is why a static BusyBox binary is ideal for a small educational rootfs.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 6. BusyBox — Building a Small Root Filesystem
@@ -446,7 +472,7 @@ appropriate /proc mount
       ↓
 correct process view
 ```
-
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 7. pivot\_root — Changing the Root Mount
@@ -536,6 +562,7 @@ After that, the old root mount is no longer part of the active mount tree of the
 
 Because the experiment is running inside a separate Mount Namespace, the simplest cleanup method is normally to terminate the namespace's processes. For a temporary namespace created with `unshare`, once the namespace no longer has member processes, it is torn down automatically.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 8. Network Namespace — Network Isolation
@@ -567,6 +594,7 @@ ip link set lo up
 
 You may see `state UNKNOWN` for loopback. That is normal because loopback does not have a physical carrier whose link state can be detected like an Ethernet device.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 9. veth Pair — Connecting the Network Namespace
@@ -645,6 +673,7 @@ The veth pair alone does not provide Internet access. Internet access would addi
 
 Those are outside the scope of this basic lab.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 10. cgroups v2 — Resource Control
@@ -714,6 +743,7 @@ period = 100000 microseconds
 
 So the cgroup receives at most `50000 / 100000 = 50%` of one CPU's scheduling time over each 100 ms period.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 11. Final Mini-Container — Putting Everything Together
@@ -857,6 +887,7 @@ This is the basic idea behind running a container for a specific workload: the c
 
 Note: /bin/sh is used throughout this lab for interactive learning and debugging. In a real container, the main application would normally be the process started as PID 1.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 ## 12. Final Verification
 
@@ -968,7 +999,7 @@ Make sure the command is being run from the host and that `<PID>` is the **host-
 Check the prerequisites: you should be inside a dedicated Mount Namespace, mount propagation should not be shared, and the new root should be a proper mount point. A self bind mount is commonly used for the lab rootfs.
 
 ---
-
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 13. The Mental Model
@@ -1023,7 +1054,7 @@ cgroups
     ↓
 How much can it use?
 ```
-
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 14. What We Did Not Cover
@@ -1059,7 +1090,7 @@ veth → bridge → routing / forwarding → NAT → Internet
 A real container runtime also handles process supervision, cleanup, namespace lifecycle, network cleanup, cgroup cleanup, signal handling, exit status, and logging.
 
 ---
-
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 15. End-to-End Lab Flow
@@ -1083,6 +1114,8 @@ Use this as the condensed execution order after studying the detailed sections a
 14. Verify PID, hostname, filesystem, /proc, network, and cgroup state
 15. Clean up temporary resources
 ```
+[↑ Back to Table of Contents](#table-of-contents)
+---
 
 ## 16. Quick Glossary
 
@@ -1134,6 +1167,7 @@ Security              → user namespaces + capabilities + seccomp
 
 That is the foundation underneath modern Linux container systems.
 
+[↑ Back to Table of Contents](#table-of-contents)
 ---
 
 ## 18. Workflow Summary (Quick Reference)
