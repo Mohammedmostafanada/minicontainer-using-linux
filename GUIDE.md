@@ -824,7 +824,38 @@ echo "50000 100000" | sudo tee /sys/fs/cgroup/mycontainer/cpu.max
 ```
 
 ---
+### 11.11 Running an Application Instead of a Shell
 
+Throughout this lab, we used `/bin/sh` as the container's interactive entry point so we could inspect and configure the environment.
+
+A real container does not have to start a shell. It can start any executable available inside the rootfs.
+
+For example:
+
+```bash
+/path/to/application
+```
+When that application is started as the first process in the PID namespace, it becomes:
+
+PID 1
+
+Conceptually:
+
+Container
+└── PID 1
+    └── application
+
+instead of:
+
+Container
+└── PID 1
+    └── /bin/sh
+
+This is the basic idea behind running a container for a specific workload: the container provides the isolated environment, while the application is the process running inside it.
+
+Note: /bin/sh is used throughout this lab for interactive learning and debugging. In a real container, the main application would normally be the process started as PID 1.
+
+---
 ## 12. Final Verification
 
 ### 12.1 PID Isolation
