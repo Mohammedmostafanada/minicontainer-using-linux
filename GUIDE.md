@@ -840,6 +840,7 @@ When that application is started as the first process in the PID namespace, it b
 PID 1
 
 Conceptually:
+```
 
 Container
 └── PID 1
@@ -850,6 +851,7 @@ instead of:
 Container
 └── PID 1
     └── /bin/sh
+```
 
 This is the basic idea behind running a container for a specific workload: the container provides the isolated environment, while the application is the process running inside it.
 
